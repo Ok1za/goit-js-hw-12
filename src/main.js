@@ -1,0 +1,167 @@
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import axios from 'axios';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const formElem = document.querySelector('.search-form');
+    const galleryEl = document.querySelector('#gallery-o');
+    const loaderElem = document.querySelector('.loader');
+    const loadMoreBtn = document.querySelector('.load-more-btn');
+    const loadMoreLoader = document.querySelector('.load-more-loader');
+    const endOfCollectionMsg = document.querySelector('.end-of-collection');
+
+    hideLoader();
+
+    const lightbox = new SimpleLightbox('.gallery-o a', {
+        captionDelay: 250,
+    });
+
+    formElem.addEventListener('submit', onSubmit);
+
+    let currentPage = 1;
+    let currentSearch = '';
+
+    async function onSubmit(e) {
+        e.preventDefault();
+        showLoader();
+        currentPage = 1;
+        currentSearch = formElem.querySelector('.input-search').value;
+
+        try {
+            const data = await getPhotoBySearch(currentSearch, currentPage);
+            renderImages(data.hits);
+        } catch (error) {
+            renderError(error);
+        } finally {
+            hideLoader();
+        }
+    }
+
+    function getPhotoBySearch(searchValue, page) {
+        const BASE_URL = 'https://pixabay.com/api/';
+        const KEY = '42296578-21d0e9ca438ad812aa67579cd';
+        const Query = `?key=${KEY}&q=${searchValue}&page=${page}`;
+        const params = '&image_type=photo&orientation=horizontal&safesearch=true&per_page=15';
+        const url = BASE_URL + Query + params;
+        
+    return axios.get(url)
+        .then(response => {
+            const data = response.data;
+            if (data.total === 0) {
+                throw new Error('No images found');
+            }
+            return data;
+        })
+        .catch(error => {
+            throw new Error(error.response.data.message);
+        });
+    }
+
+    function renderImages(array) {
+    const markup = array
+        .map(
+        ({
+            largeImageURL,
+            webformatURL,
+            tags,
+            likes,
+            views,
+            comments,
+            downloads,
+        }) => {
+            return `
+        <div class="gallery">
+            <a href="${largeImageURL}">
+            <img src="${webformatURL}" alt="${tags}" title="${tags}" width="400" height="240" />
+            <ul class="info-cards-container">
+                <li class="info-cards-elements">likes<span>${likes}</span></li>
+                <li class="info-cards-elements">views<span>${views}</span></li>
+                <li class="info-cards-elements">comments<span>${comments}</span></li>
+                <li class="info-cards-elements">downloads<span>${downloads}</span></li>
+            </ul>
+            </a>
+        </div>
+        `;
+        }
+        )
+        .join('');
+
+    galleryEl.innerHTML = markup;
+    lightbox.refresh();
+    showLoadMoreButton();
+    }
+
+    function renderError(error) {
+    galleryEl.innerHTML = '';
+    iziToast.show({
+        message: `❌ "${error.message}". Please try again!`,
+        color: 'red',
+        position: 'topRight',
+        maxWidth: '400px',
+    });
+    }
+
+    function showLoader() {
+    loaderElem.style.display = 'block';
+    }
+
+    function hideLoader() {
+    loaderElem.style.display = 'none';
+    }
+
+    function showLoadMoreButton() {
+        loadMoreBtn.hidden = false;
+    }
+
+    loadMoreBtn.addEventListener('click', async () => {
+        showLoadMoreLoader();
+
+        try {
+            const data = await getPhotoBySearch(currentSearch, currentPage + 1);
+            appendImages(data.hits);
+            currentPage++;
+        } catch (error) {
+            renderError(error);
+        } finally {
+            hideLoadMoreLoader();
+        }
+    });
+
+    function appendImages(array) {
+        const markup = array
+            .map(({ largeImageURL, webformatURL, tags, likes, views, comments, downloads }) => {
+                return `
+                    <div class="gallery">
+                        <a href="${largeImageURL}">
+                            <img src="${webformatURL}" alt="${tags}" title="${tags}" width="380" height="220" />
+                            <ul class="info-cards-container">
+                                <li class="info-cards-elements">likes<span>${likes}</span></li>
+                                <li class="info-cards-elements">views<span>${views}</span></li>
+                                <li class="info-cards-elements">comments<span>${comments}</span></li>
+                                <li class="info-cards-elements">downloads<span>${downloads}</span></li>
+                            </ul>
+                        </a>
+                    </div>
+                `;
+            })
+            .join('');
+
+        galleryEl.insertAdjacentHTML('beforeend', markup);
+        lightbox.refresh();
+
+        hideLoadMoreLoader();
+    }
+
+    function showLoadMoreLoader() {
+        loadMoreLoader.style.display = 'block';
+        loadMoreBtn.hidden = true;
+    }
+
+
+    function hideLoadMoreLoader() {
+        loadMoreLoader.style.display = 'none';
+        loadMoreBtn.hidden = false;
+    }
+});
