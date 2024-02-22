@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const data = await getPhotoBySearch(currentSearch, currentPage);
             renderImages(data.hits);
+            currentPage++;
         } catch (error) {
             renderError(error);
         } finally {
@@ -39,26 +40,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function getPhotoBySearch(searchValue, page) {
+    async function getPhotoBySearch(searchValue, page) {
         const BASE_URL = 'https://pixabay.com/api/';
         const KEY = '42296578-21d0e9ca438ad812aa67579cd';
         const Query = `?key=${KEY}&q=${searchValue}&page=${page}`;
         const params = '&image_type=photo&orientation=horizontal&safesearch=true&per_page=15';
         const url = BASE_URL + Query + params;
         
-    return axios.get(url)
-        .then(response => {
+        try {
+            const response = await axios.get(url);
             const data = response.data;
-            if (data.total === 0) {
-                throw new Error('No images found');
-            }
-            return data;
-        })
-        .catch(error => {
-            throw new Error(error.response.data.message);
-        });
-    }
+        
+        if (!data || data.total === 0 || !data.hits || data.hits.length === 0) {
+            throw new Error('No images found');
+        }
 
+        const totalPages = Math.ceil(data.totalHits / 15);
+        if (page >= totalPages) {
+            hideLoadMoreButton();
+            showEndOfCollectionMessage();
+        } else {
+            showLoadMoreButton();
+            hideEndOfCollectionMessage();
+        }
+
+        return data;
+    } catch (error) {
+        throw new Error(error.response ? error.response.data.message : error.message);
+    }
+}
+
+    function hideLoadMoreButton() {
+    loadMoreBtn.hidden = true;
+}
+
+function showLoadMoreButton() {
+    loadMoreBtn.hidden = false;
+}
+
+function showEndOfCollectionMessage() {
+    endOfCollectionMsg.style.display = 'block';
+}
+
+function hideEndOfCollectionMessage() {
+    endOfCollectionMsg.style.display = 'none';
+}
+
+    
     function renderImages(array) {
     const markup = array
         .map(
@@ -112,22 +140,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showLoadMoreButton() {
-        loadMoreBtn.hidden = false;
+        toggleLoadMoreButtonVisibility(true);
     }
 
     loadMoreBtn.addEventListener('click', async () => {
         showLoadMoreLoader();
 
-        try {
-            const data = await getPhotoBySearch(currentSearch, currentPage + 1);
+    try {
+        const data = await getPhotoBySearch(currentSearch, currentPage + 1);
+        
+        if (data.totalHits === 0) {
+            hideLoadMoreButton();
+            showEndOfCollectionMessage();
+        } else {
             appendImages(data.hits);
             currentPage++;
-        } catch (error) {
-            renderError(error);
-        } finally {
-            hideLoadMoreLoader();
         }
-    });
+    } catch (error) {
+        renderError(error);
+    } finally {
+        hideLoadMoreLoader();
+    }
+});
 
     function appendImages(array) {
         const markup = array
@@ -154,14 +188,27 @@ document.addEventListener('DOMContentLoaded', () => {
         hideLoadMoreLoader();
     }
 
-    function showLoadMoreLoader() {
-        loadMoreLoader.style.display = 'block';
-        loadMoreBtn.hidden = true;
+    function toggleLoadMoreButtonVisibility(show) {
+        loadMoreBtn.hidden = !show;
     }
 
+    function showLoadMoreLoader() {
+        toggleLoadMoreLoaderVisibility(true);
+    }
 
     function hideLoadMoreLoader() {
-        loadMoreLoader.style.display = 'none';
-        loadMoreBtn.hidden = false;
+        toggleLoadMoreLoaderVisibility(false);
+    }
+
+    function toggleLoadMoreLoaderVisibility(show) {
+        loadMoreLoader.style.display = show ? 'block' : 'none';
+    }
+
+    function showEndOfCollectionMessage() {
+        endOfCollectionMsg.style.display = 'block';
+    }
+
+    function hideEndOfCollectionMessage() {
+        endOfCollectionMsg.style.display = 'none';
     }
 });
