@@ -1,26 +1,26 @@
-import{S as O,a as P,i as x}from"./assets/vendor-5401a4b0.js";(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))a(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const n of t.addedNodes)n.tagName==="LINK"&&n.rel==="modulepreload"&&a(n)}).observe(document,{childList:!0,subtree:!0});function p(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function a(e){if(e.ep)return;e.ep=!0;const t=p(e);fetch(e.href,t)}})();document.addEventListener("DOMContentLoaded",()=>{const h=document.querySelector(".search-form"),s=document.querySelector("#gallery-o"),p=document.querySelector(".loader"),a=document.querySelector(".load-more-btn"),e=document.querySelector(".load-more-loader");document.querySelector(".end-of-collection"),$();const t=new O(".gallery-o a",{captionDelay:250});h.addEventListener("submit",S);let n=1,y="";async function S(o){o.preventDefault(),E(),n=1,y=h.querySelector(".input-search").value;try{const r=await g(y,n);v(r.hits)}catch(r){L(r)}finally{$()}}function g(o,r){const d="https://pixabay.com/api/",i=`?key=42296578-21d0e9ca438ad812aa67579cd&q=${o}&page=${r}`,u="&image_type=photo&orientation=horizontal&safesearch=true&per_page=15",f=d+i+u;return P.get(f).then(l=>{const c=l.data;if(c.total===0)throw new Error("No images found");return c}).catch(l=>{throw new Error(l.response.data.message)})}function v(o){const r=o.map(({largeImageURL:d,webformatURL:m,tags:i,likes:u,views:f,comments:l,downloads:c})=>`
+import{S as N,a as T,i as j}from"./assets/vendor-5401a4b0.js";(function(){const a=document.createElement("link").relList;if(a&&a.supports&&a.supports("modulepreload"))return;for(const t of document.querySelectorAll('link[rel="modulepreload"]'))i(t);new MutationObserver(t=>{for(const o of t)if(o.type==="childList")for(const c of o.addedNodes)c.tagName==="LINK"&&c.rel==="modulepreload"&&i(c)}).observe(document,{childList:!0,subtree:!0});function m(t){const o={};return t.integrity&&(o.integrity=t.integrity),t.referrerPolicy&&(o.referrerPolicy=t.referrerPolicy),t.crossOrigin==="use-credentials"?o.credentials="include":t.crossOrigin==="anonymous"?o.credentials="omit":o.credentials="same-origin",o}function i(t){if(t.ep)return;t.ep=!0;const o=m(t);fetch(t.href,o)}})();document.addEventListener("DOMContentLoaded",()=>{const y=document.querySelector(".search-form"),a=document.querySelector("#gallery-o"),m=document.querySelector(".loader"),i=document.querySelector(".load-more-btn"),t=document.querySelector(".load-more-loader"),o=document.querySelector(".end-of-collection");b();const c=new N(".gallery-o a",{captionDelay:250});y.addEventListener("submit",q);let d=1,g="";async function q(e){e.preventDefault(),B(),d=1,g=y.querySelector(".input-search").value;try{const n=await M(g,d);P(n.hits),d++}catch(n){E(n)}finally{b()}}async function M(e,n){const u="https://pixabay.com/api/",l=`?key=42296578-21d0e9ca438ad812aa67579cd&q=${e}&page=${n}`,f="&image_type=photo&orientation=horizontal&safesearch=true&per_page=15",p=u+l+f;try{const s=(await T.get(p)).data;if(!s||s.total===0||!s.hits||s.hits.length===0)throw new Error("No images found");const H=Math.ceil(s.totalHits/15);return n>=H?($(),w()):(L(),O()),s}catch(r){throw new Error(r.response?r.response.data.message:r.message)}}function $(){i.hidden=!0}function P(e){const n=e.map(({largeImageURL:u,webformatURL:h,tags:l,likes:f,views:p,comments:r,downloads:s})=>`
         <div class="gallery">
-            <a href="${d}">
-            <img src="${m}" alt="${i}" title="${i}" width="400" height="240" />
+            <a href="${u}">
+            <img src="${h}" alt="${l}" title="${l}" width="400" height="240" />
             <ul class="info-cards-container">
-                <li class="info-cards-elements">likes<span>${u}</span></li>
-                <li class="info-cards-elements">views<span>${f}</span></li>
-                <li class="info-cards-elements">comments<span>${l}</span></li>
-                <li class="info-cards-elements">downloads<span>${c}</span></li>
+                <li class="info-cards-elements">likes<span>${f}</span></li>
+                <li class="info-cards-elements">views<span>${p}</span></li>
+                <li class="info-cards-elements">comments<span>${r}</span></li>
+                <li class="info-cards-elements">downloads<span>${s}</span></li>
             </ul>
             </a>
         </div>
-        `).join("");s.innerHTML=r,t.refresh(),b()}function L(o){s.innerHTML="",x.show({message:`❌ "${o.message}". Please try again!`,color:"red",position:"topRight",maxWidth:"400px"})}function E(){p.style.display="block"}function $(){p.style.display="none"}function b(){a.hidden=!1}a.addEventListener("click",async()=>{q();try{const o=await g(y,n+1);M(o.hits),n++}catch(o){L(o)}finally{w()}});function M(o){const r=o.map(({largeImageURL:d,webformatURL:m,tags:i,likes:u,views:f,comments:l,downloads:c})=>`
+        `).join("");a.innerHTML=n,c.refresh(),L()}function E(e){a.innerHTML="",j.show({message:`❌ "${e.message}". Please try again!`,color:"red",position:"topRight",maxWidth:"400px"})}function B(){m.style.display="block"}function b(){m.style.display="none"}function L(){C(!0)}i.addEventListener("click",async()=>{k();try{const e=await M(g,d+1);e.totalHits===0?($(),w()):(x(e.hits),d++)}catch(e){E(e)}finally{S()}});function x(e){const n=e.map(({largeImageURL:u,webformatURL:h,tags:l,likes:f,views:p,comments:r,downloads:s})=>`
                     <div class="gallery">
-                        <a href="${d}">
-                            <img src="${m}" alt="${i}" title="${i}" width="380" height="220" />
+                        <a href="${u}">
+                            <img src="${h}" alt="${l}" title="${l}" width="380" height="220" />
                             <ul class="info-cards-container">
-                                <li class="info-cards-elements">likes<span>${u}</span></li>
-                                <li class="info-cards-elements">views<span>${f}</span></li>
-                                <li class="info-cards-elements">comments<span>${l}</span></li>
-                                <li class="info-cards-elements">downloads<span>${c}</span></li>
+                                <li class="info-cards-elements">likes<span>${f}</span></li>
+                                <li class="info-cards-elements">views<span>${p}</span></li>
+                                <li class="info-cards-elements">comments<span>${r}</span></li>
+                                <li class="info-cards-elements">downloads<span>${s}</span></li>
                             </ul>
                         </a>
                     </div>
-                `).join("");s.insertAdjacentHTML("beforeend",r),t.refresh(),w()}function q(){e.style.display="block",a.hidden=!0}function w(){e.style.display="none",a.hidden=!1}});
+                `).join("");a.insertAdjacentHTML("beforeend",n),c.refresh(),S()}function C(e){i.hidden=!e}function k(){v(!0)}function S(){v(!1)}function v(e){t.style.display=e?"block":"none"}function w(){o.style.display="block"}function O(){o.style.display="none"}});
 //# sourceMappingURL=commonHelpers.js.map
