@@ -118,7 +118,11 @@ function hideEndOfCollectionMessage() {
 
     galleryEl.innerHTML = markup;
     lightbox.refresh();
-    showLoadMoreButton();
+    if (array.length < 15) {
+        hideLoadMoreButton();
+    } else {
+        showLoadMoreButton();
+    }
     }
 
     function renderError(error) {
@@ -154,11 +158,11 @@ function hideEndOfCollectionMessage() {
             showEndOfCollectionMessage();
         } else {
             appendImages(data.hits);
-            currentPage++;
         }
     } catch (error) {
         renderError(error);
     } finally {
+        currentPage++;
         hideLoadMoreLoader();
     }
 });
