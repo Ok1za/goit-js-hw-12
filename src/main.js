@@ -151,7 +151,7 @@ function hideEndOfCollectionMessage() {
         showLoadMoreLoader();
 
     try {
-        const data = await getPhotoBySearch(currentSearch, currentPage + 1);
+        const data = await getPhotoBySearch(currentSearch, currentPage);
         
         if (data.totalHits === 0) {
             hideLoadMoreButton();
