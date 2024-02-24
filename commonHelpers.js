@@ -10,7 +10,7 @@ import{S as N,a as T,i as j}from"./assets/vendor-5401a4b0.js";(function(){const 
             </ul>
             </a>
         </div>
-        `).join("");a.innerHTML=n,c.refresh(),e.length<15?L():w()}function E(e){a.innerHTML="",j.show({message:`❌ "${e.message}". Please try again!`,color:"red",position:"topRight",maxWidth:"400px"})}function B(){m.style.display="block"}function b(){m.style.display="none"}function w(){C(!0)}i.addEventListener("click",async()=>{k();try{const e=await $(g,d+1);e.totalHits===0?(L(),M()):x(e.hits)}catch(e){E(e)}finally{d++,S()}});function x(e){const n=e.map(({largeImageURL:u,webformatURL:h,tags:l,likes:f,views:p,comments:r,downloads:s})=>`
+        `).join("");a.innerHTML=n,c.refresh(),e.length<15?L():w()}function E(e){a.innerHTML="",j.show({message:`❌ "${e.message}". Please try again!`,color:"red",position:"topRight",maxWidth:"400px"})}function B(){m.style.display="block"}function b(){m.style.display="none"}function w(){C(!0)}i.addEventListener("click",async()=>{k();try{const e=await $(g,d);e.totalHits===0?(L(),M()):x(e.hits)}catch(e){E(e)}finally{d++,S()}});function x(e){const n=e.map(({largeImageURL:u,webformatURL:h,tags:l,likes:f,views:p,comments:r,downloads:s})=>`
                     <div class="gallery">
                         <a href="${u}">
                             <img src="${h}" alt="${l}" title="${l}" width="380" height="220" />
