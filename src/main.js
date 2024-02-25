@@ -33,6 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await getPhotoBySearch(currentSearch, currentPage);
             renderImages(data.hits);
             currentPage++;
+            const totalPages = Math.ceil(data.totalHits / 15);
+            if (totalPages > 1) {
+                showLoadMoreButton();
+            }
         } catch (error) {
             renderError(error);
         } finally {
